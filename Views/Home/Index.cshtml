@@ -1,0 +1,106 @@
+﻿@using ASP.NET_MVC_TestTask.Models
+@{
+    ViewBag.Title = "Index";
+    Layout = null;
+}
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" crossorigin="anonymous" />
+
+<html>
+<head>
+    <title>FilmsTable</title>
+    <link rel="stylesheet" href="~/Content/Site.css" />
+    <meta charset="utf-8" />
+</head>
+<body>
+    <ul class="horizontal">
+        <li><input id="searchbox" /></li>
+        <li>
+            <select id="selectbar" class="form-select" aria-label="Default select example">
+                <option value="0" selected=selected>Choose search option</option>
+                <option value="1">By name</option>
+                <option value="2">By genre</option>
+                <option value="3">By actors</option>
+            </select>
+        </li>
+          <li>  <button onclick="SearchButton()" class="btn btn-dark" id="Button1">Search</button></li>
+       
+           <li> <button onclick="LoadTable()" class="btn btn-dark">Load Main Table</button></li>
+           
+       </ul>
+        <h3 align="center">Films table</h3>
+        <br />
+        <table id="filmtable" width="300" border="1" class="table table-dark table-striped">
+            <thead>
+                <tr>
+                    <td>Movie Name</td>
+                    <td>Genre</td>
+                    <td>Actors</td>
+                </tr>
+            </thead>
+            <tbody id="tbody">
+                @{
+                    foreach (var film in ViewBag.Films)
+                    {
+                        <tr>
+                            <td>@film.MovieName</td>
+                            <td>@film.Genre</td>
+                            <td>@film.Actors</td>
+                        </tr>
+                    }
+                }
+
+            </tbody>
+        </table>
+        <script>
+        var filmsarray = @Html.Raw(Json.Encode(ViewData["List"]));
+        var table = document.getElementById("filmtable");
+        function SearchButton() {
+
+
+            var selectbar = document.getElementById("selectbar").value;
+            var searchbox = document.getElementById("searchbox").value;
+            var selectedfilms;
+
+
+            if (selectbar == 0 || searchbox == "") { alert("Вы не выбрали критерий поиска или строка пустая"); return 0; }
+            switch (selectbar) {
+                case '1': { selectedfilms = filmsarray.filter(e => e.MovieName == searchbox); break; }
+                case '2': { selectedfilms = filmsarray.filter(e => e.Genre == searchbox); break; }
+                case '3': { selectedfilms = filmsarray.filter(e => e.Actors == searchbox); break; }
+                default: alert("Ошибка");
+            }
+
+            console.log(selectedfilms);
+            var table = document.getElementById("tbody");
+            tbody.innerHTML = "";
+
+
+            var template = ""; var count = selectedfilms.length;
+            for (var i in selectedfilms)
+                template += "<tr> <td>" + selectedfilms[i].MovieName + "</td> <td>" + selectedfilms[i].Genre + "</td> <td>" + selectedfilms[i].Actors + "</td> </tr>";
+
+
+            console.log(template);
+            table.innerHTML += template;
+            alert("Found " + count + " records in table");
+        }
+            function LoadTable() {
+
+                var table = document.getElementById("tbody");
+                tbody.innerHTML = "";
+                var template = "";
+                for (var i in filmsarray)
+                    template += "<tr> <td>" + filmsarray[i].MovieName + "</td> <td>" + filmsarray[i].Genre + "</td> <td>" + filmsarray[i].Actors + "</td> </tr>";
+
+                table.innerHTML += template;
+            }
+
+        </script>
+
+    </ul></body>
+
+</html>
